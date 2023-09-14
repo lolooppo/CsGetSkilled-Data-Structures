@@ -1,2 +1,2 @@
 # cpp_data_structure
-c++ implemented data structure
+c++ implemented data structures
