@@ -17,6 +17,7 @@ struct node{
 class binary_search_tree{
 private:
     node* root{nullptr};
+
     //print sorted
     void print(node* temp){
         if(temp->left)
@@ -25,6 +26,7 @@ private:
         if(temp->right)
             print(temp->right);
     }
+
     //add to the tree
     void add(int data,node* temp){
         if(data<temp->data){
@@ -41,6 +43,7 @@ private:
             }
         }
     }
+
     //check if exist(recursive approach)
     bool exist(int data,node* temp){
         if(data == temp->data)
@@ -52,6 +55,7 @@ private:
         }
         return false;
     }
+
     //get the least common ancestor
     int lca(int data1,int data2,node* temp){
         if(data1<temp->data and data2<temp->data)
@@ -60,6 +64,7 @@ private:
             return lca(data1,data2,temp->right);
         return temp->data;
     }
+
     //get the maximum
     int max(node* temp){
         while(temp and temp->right){
@@ -67,6 +72,7 @@ private:
         }
         return temp->data;
     }
+
     //get the minimum
     int min(node* temp){
         while(temp and temp->left){
@@ -74,6 +80,7 @@ private:
         }
         return temp->data;
     }
+
     //clear
     void clear(node *temp){
         if(!temp)
@@ -82,6 +89,7 @@ private:
         clear(temp->right);
         delete temp;
     }
+
     //get the father of the given node parents vector
     node* get_next(vector<node*>& v){
         if((int)v.size() == 0)
@@ -90,6 +98,7 @@ private:
         v.pop_back();
         return temp;
     }
+
     //queries of ancestors
     pair<bool,int> get_ancestors(node* parent,node*child,int data){
         if(child->data == data){
@@ -104,6 +113,7 @@ private:
         }
         return make_pair(false,-1);
     }
+
     //deletion of nodes
     node* min_node(node* temp){//in case of successor
         node* dummy{temp};
@@ -143,26 +153,31 @@ private:
         }
         return temp;
     }
+
 public:
     //constructor
     binary_search_tree(int data):root(new node(data)){}
+
     //print sorted
     void print(){
         node* temp{root};
         print(temp);
         cout<<"\n";
     }
+
     //add to the tree
     void add(int data){
         node* temp{root};
         add(data,temp);
     }
+
     //check if exist(recursive approach)
     bool exist(int data){
         node* temp{root};
         bool is = exist(data,temp);
         return is;
     }
+
     //check if exist(iteratively)
     bool _exist(int data){
         node* temp{root};
@@ -175,24 +190,28 @@ public:
         }
         return false;
     }
+
     //get the minimum in the tree
     int max(){
         node* temp{root};
         int res = max(temp);
         return res;
     }
+
     //get the minimum in the tree
     int min(){
         node* temp{root};
         int res = min(temp);
         return res;
     }
+
     //get the lowest common ancestor
     int lca(int data1,int data2){
         node* temp{root};
         int res = lca(data1,data2,temp);
         return res;
     }
+
     //get the chain till the target node
     bool find_chain(vector<node*>& v,int data){
         node* temp{root};
@@ -211,6 +230,7 @@ public:
         }
         return is;
     }
+
     //get the successor of given node
     pair<bool,int> get_successor(int data){
         vector<node*>ancestors;
@@ -233,6 +253,7 @@ public:
             return make_pair(true,parent->data);
         return make_pair(false,-1);
     }
+
     //get the predecessor
     pair<bool,int> get_predecessor(int data){
         vector<node*>ancestors;
@@ -255,6 +276,7 @@ public:
             return make_pair(true,parent->data);
         return make_pair(false,-1);
     }
+
     //queries of ancestors
     vector<pair<bool,int>> get_ancestors(vector<int>& q){
         vector<pair<bool,int>>ans;
@@ -264,6 +286,7 @@ public:
         }
         return ans;
     }
+
     //check if the given preorder is degenerate tree or not
     bool  degenerate(vector<int>& v){
         int n = v.size();
@@ -283,12 +306,14 @@ public:
         }
         return true;
     }
+
     //delete node
     void delete_val(int data){
         if(root->data == data and !root->left and !root->right)
             return;//can not delete the structure it self
         delete_node(root,data);
     }
+
     //destructor
     ~binary_search_tree(){
         node* temp{root};
