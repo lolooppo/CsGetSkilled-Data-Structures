@@ -1,6 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+/************************************************/
+/*       object : max heap using min heap       */
+/************************************************/
+
 class minHeap{
 private:
     int current_idx{-1} , capacity{1000} , *array{nullptr};
