@@ -51,7 +51,7 @@ private:
             heapify_down(target_pos);
         }
     }
-    
+
     //Floyd heapfiy algorithm(from bottom to up) --> o(n)
     void heapify(){
         for(int i = current_idx / 2 ;i>=0;i--){
@@ -59,6 +59,29 @@ private:
         }
     }
 
+    //check if heap
+    bool _is_heap(int _parent_pos = 0){
+        bool is = true;
+
+        //go back if leaf
+        if(_parent_pos == -1)
+            return is;
+
+        int left_child = left(_parent_pos) , right_child = right(_parent_pos);
+
+        if(left_child != -1 and array[left_child] < array[_parent_pos]){
+            is = false;
+        }
+        if(right_child != -1 and array[right_child] < array[_parent_pos]){
+            is = false;
+        }
+
+        //to stop immediately if not a heap
+        if(!is)
+            return false;
+
+        return _is_heap(left_child) and _is_heap(right_child);
+    }
 public:
     minHeap(){
         array = new int [capacity];
@@ -116,11 +139,57 @@ public:
     bool full(){
         return current_idx == capacity - 1;
     }
-    
-    bool is_heap(int *arr , int n){
-        
+
+    bool is_heap(int *p , int n){
+        int *old_array = array , old_idx = current_idx;
+        array = p , current_idx = n-1;
+
+        assert(current_idx > -1);
+
+        bool is = _is_heap();
+
+        array = old_array , current_idx = old_idx;
+
+        return is;
     }
-    
+
+    //heap sort
+    void heap_sort(int* p , int n){
+        int last_idx = current_idx , *old_array = array , old_idx = current_idx;
+        array = p , current_idx = n-1;
+
+        //build the heap first
+        heapify();
+        
+        //act as deleting the top and fix
+        while(current_idx != 0){
+            swap(array[0] , array[current_idx--]);
+            heapify_down(0);
+        }
+
+        //reverse
+        for(int i = 0;i < n/2;i++){
+            swap(array[i] , array[n-i-1]);
+        }
+
+        array = old_array , current_idx = old_idx;
+    }
+
+    void print_less_than(int val , int _parent_pos = 0){
+        //check if we out of bound or the current value is not <
+        if(_parent_pos > current_idx or array[_parent_pos] >= val){
+            return;
+        }
+
+        //otherwise
+        cout<<array[_parent_pos]<<" ";
+
+        int left_child = left(_parent_pos) , right_child = right(_parent_pos);
+
+        print_less_than(val , left_child);
+        print_less_than(val , right_child);
+    }
+
     ~minHeap(){
         delete [] array;
         array = nullptr;
