@@ -1,22 +1,26 @@
 #include<bits/stdc++.h>
 using namespace std;
+
+                /***************************************************
+                            Object : trie data structure
+                            Author : Alaa Omran
+                 ***************************************************/
+
+
 class trie{
 private:
-    static const int MAX_CHAR = 26;
-    trie* child[MAX_CHAR];
+    
+    map<int , trie*>child;
     bool isLeaf{false};
 
 public:
-    trie(){
-        memset(child , 0 ,sizeof(child));
-    }
-
+    
     void insert(string str , int idx = 0){
         if(idx == (int)str.size())
             isLeaf = true;
         else{
             int currentChar = str[idx] - 'a';
-            if(child[currentChar] == 0)
+            if(child.count(currentChar) == 0)
                 child[currentChar] = new trie();
 
             child[currentChar]->insert(str , idx + 1);
@@ -28,7 +32,7 @@ public:
             return isLeaf;
 
         int currentChar = str[idx] - 'a';
-        if(child[currentChar] == 0)
+        if(child.count(currentChar) == 0)
             return false;
 
         return child[currentChar]->exist(str , idx + 1);
@@ -39,7 +43,7 @@ public:
             return true;
 
         int currentChar = str[idx] - 'a';
-        if(child[currentChar] == 0)
+        if(child.count(currentChar) == 0)
             return false;
 
         return child[currentChar]->prefix(str , idx + 1);
@@ -62,7 +66,7 @@ public:
 
         for(int idx = 0 ;idx < (int)str.size(); idx++){
             int currentChar = str[idx] - 'a';
-            if(tmp->child[currentChar] == 0)
+            if(tmp->child.count(currentChar) == 0)
                 tmp->child[currentChar] = new trie();
             tmp = tmp->child[currentChar];
         }
@@ -79,7 +83,7 @@ public:
 
         for(int idx = 0;idx<(int)str.size();idx++){
             int currentChar = str[idx] - 'a';
-            if(tmp->child[currentChar] == 0)
+            if(tmp->child.count(currentChar) == 0)
                 return false;
             tmp = tmp->child[currentChar];
         }
@@ -96,7 +100,7 @@ public:
 
         for(int idx = 0;idx<(int)str.size();idx++){
             int currentChar = str[idx] - 'a';
-            if(tmp->child[currentChar] == 0)
+            if(tmp->child.count(currentChar) == 0)
                 return false;
             tmp = tmp->child[currentChar];
         }
@@ -106,9 +110,87 @@ public:
 
 
     //4                     leetcode problem ===> my solution(https://leetcode.com/problems/replace-words/solutions/4739024/easy-solution-c-beats-99-9/)
+};
+
+
+
+
+
+
+//implement a modified trie that provides suffix function
+class suffix_trie{
+private:
     
-    
-    
-    
-    
+    map<int , suffix_trie*> child;
+    bool isLeaf{false};
+
+public:
+
+    void insert_iterative(string str){
+        suffix_trie* tmp = this;
+
+        for(int idx = (int)str.size() - 1 ;idx > -1 ; idx--){
+            int currentChar = str[idx] - 'a';
+            if(tmp->child.count(currentChar) == 0){
+                tmp->child[currentChar] = new suffix_trie();
+            }
+            tmp = tmp->child[currentChar];
+        }
+        tmp->isLeaf = true;
+    }
+
+
+
+
+
+    //5                              implement suffix function
+    bool suffix_iterative(string str){
+        suffix_trie* tmp = this;
+
+        for(int idx = (int)str.size() - 1 ;idx > -1 ; idx--){
+            int currentChar = str[idx] - 'a';
+            if(tmp->child.count(currentChar) == 0)
+                return false;
+            tmp = tmp->child[currentChar];
+        }
+        return true;
+    }
+};
+
+
+
+
+
+
+//implement a modified trie that helps in operating systems paths checking
+class paths_trie{
+private:
+    map<string , paths_trie*> child;
+    bool isLeaf{false};
+
+public:
+
+    void insert_iterative(const vector<string>& path){
+        paths_trie* tmp = this;
+        for(int idx = 0;idx < (int)path.size();idx++){
+            if(tmp->child.count(path[idx]) == 0){
+                tmp->child[path[idx]] = new paths_trie();
+            }
+            tmp = tmp->child[path[idx]];
+        }
+        tmp->isLeaf = true;
+    }
+
+
+
+    //6                              implement the sub path exist function
+    bool subpath_exist(const vector<string>& path){
+        paths_trie* tmp = this;
+        for(int idx = 0;idx < (int)path.size();idx++){
+            if(tmp->child.count(path[idx]) == 0)
+                return false;
+            tmp = tmp->child[path[idx]];
+        }
+        return true;
+    }
 };
