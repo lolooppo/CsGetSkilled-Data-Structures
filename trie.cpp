@@ -239,4 +239,8 @@ public:
         }
         return true;
     }
+
+
+
+//9                     leetcode problem ===> my solution(https://leetcode.com/problems/implement-magic-dictionary/solutions/4743981/trie/)
 };
