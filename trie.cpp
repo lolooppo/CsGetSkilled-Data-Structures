@@ -9,12 +9,14 @@ using namespace std;
 
 class trie{
 private:
-    
     map<int , trie*>child;
     bool isLeaf{false};
 
 public:
-    
+    trie(){
+
+    }
+
     void insert(string str , int idx = 0){
         if(idx == (int)str.size())
             isLeaf = true;
@@ -110,7 +112,49 @@ public:
 
 
     //4                     leetcode problem ===> my solution(https://leetcode.com/problems/replace-words/solutions/4739024/easy-solution-c-beats-99-9/)
+
+
+
+
+    //5                     implement a function that prints the tree words
+    void get_all_strings(vector<string>& res , string str = ""){
+        if(isLeaf)
+            res.push_back(str);
+        for(int i = 0;i<26;i++){
+            if(child.count(i))
+                child[i]->get_all_strings(res , str + char('a' + i));
+        }
+    }
+
+
+
+
+
+
+    //6                     implement an auto complete function
+    void auto_complete_v1(vector<string>& res ,const string& word , string str = "" , int idx = 0){
+        if(isLeaf and idx >= (int)word.size())
+            res.push_back(str);
+        for(int i = 0;i<26;i++){
+            if(  child.count(i) and (idx >= (int)word.size()    or    word[idx] == (char)('a' + i))  )
+                child[i]->auto_complete_v1(res , word , str + (char)('a' + i) , idx + 1);
+        }
+    }
+    //another version of problem 6
+    void auto_complete_v2(vector<string>& res ,const string& word){
+        trie* tmp = this;
+        for(int i = 0;i<(int)word.size();i++){
+            int currentChild = word[i] - 'a';
+            if(tmp->child.count(currentChild) == 0)
+                return;
+            tmp = tmp->child[currentChild];
+        }
+        tmp->get_all_strings(res , word);
+    }
+
 };
+
+
 
 
 
@@ -120,11 +164,13 @@ public:
 //implement a modified trie that provides suffix function
 class suffix_trie{
 private:
-    
     map<int , suffix_trie*> child;
     bool isLeaf{false};
 
 public:
+    suffix_trie(){
+        //memset(child , 0 ,sizeof(child));
+    }
 
     void insert_iterative(string str){
         suffix_trie* tmp = this;
@@ -143,7 +189,7 @@ public:
 
 
 
-    //5                              implement suffix function
+    //7                              implement suffix function
     bool suffix_iterative(string str){
         suffix_trie* tmp = this;
 
@@ -183,7 +229,7 @@ public:
 
 
 
-    //6                              implement the sub path exist function
+    //8                              implement the sub path exist function
     bool subpath_exist(const vector<string>& path){
         paths_trie* tmp = this;
         for(int idx = 0;idx < (int)path.size();idx++){
