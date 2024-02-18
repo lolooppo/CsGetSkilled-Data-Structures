@@ -3,7 +3,7 @@ using namespace std;
 
                 /***************************************************
                             Object : trie data structure
-                            Author : @@Alaa Omran
+                            Author : @Alaa Omran
                  ***************************************************/
 
 
