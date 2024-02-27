@@ -4,7 +4,7 @@ using namespace std;
 class trie{
 private:
     map<int , trie*>child;
-    bool isLeaf{true};
+    bool isLeaf{false};
 
 public:
     trie(){
@@ -20,13 +20,12 @@ public:
                 tmp->child[currentChar] = new trie();
             tmp = tmp->child[currentChar];
         }
+        tmp->isLeaf = true;
     }
 
     void get_all_strings(vector<string>& res , string str = ""){
-        if(isLeaf){
-            if(str != "")//handle the first time to push
-                res.push_back(str);
-        }
+        if(isLeaf)
+            res.push_back(str);
         for(int i = 0;i<26;i++){
             if(child.count(i))
                 child[i]->get_all_strings(res , str + char('a' + i));
@@ -59,9 +58,10 @@ int count_unique_substrings_trie(const string &str){
     trie tree;
     vector<string>res;
     int n = (int)str.size();
-    for(int i = 0;i < n;i++){
-        string sub = str.substr(i , n);
-        tree.insert_iterative(sub);
+    for(int start = 0;start < n;start++){
+        for(int end = start;end < n;end++){
+            tree.insert_iterative(str.substr(start , end - start + 1));
+        }
     }
     tree.get_all_strings(res);
     return (int)res.size();
