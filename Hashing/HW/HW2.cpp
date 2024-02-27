@@ -1,108 +1,148 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-// tree node
-struct node{
-    int data;
-    node *left{nullptr} , *right{nullptr};
-    node(int data):data(data){}
-};
-
-
-//tree class
-class binary_search_tree{
+class trie{
 private:
-    node* root{nullptr};
-
-    //print sorted
-    void print(node* temp){
-        if(temp->left)
-            print(temp->left);
-        cout<<temp->data<<" ";
-        if(temp->right)
-            print(temp->right);
-    }
-
-    //add to the tree
-    void add(int data,node* temp){
-        if(data<temp->data){
-            if(temp->left){
-                add(data,temp->left);
-            }else{
-                temp->left = new node(data);
-            }
-        }else{
-            if(temp->right){
-                add(data,temp->right);
-            }else{
-                temp->right = new node(data);
-            }
-        }
-    }
-
-
-
-    //clear
-    void clear(node *temp){
-        if(!temp)
-            return;
-        clear(temp->left);
-        clear(temp->right);
-        delete temp;
-    }
-
-
-    //queries of ancestors
-    pair<bool,int> get_ancestors(node* parent , node* child , int data){
-        if(child->data == data){
-            if(!parent)
-                return make_pair(false,-1);//root case(it has not ancestor)
-            return make_pair(true,parent->data);
-        }
-        if(child->data>data and child->left){
-            return get_ancestors(child,child->left,data);
-        }else if(child->data<data and child->right){
-            return get_ancestors(child,child->right,data);
-        }
-        return make_pair(false,-1);
-    }
-
-    
+    map<int , trie*>child;
+    bool isLeaf{false};
 
 public:
-    //constructor
-    binary_search_tree(int data):root(new node(data)){}
+    trie(){
 
-    //print sorted
-    void print(){
-        node* temp{root};
-        print(temp);
-        cout<<"\n";
     }
 
-    //add to the tree
-    void add(int data){
-        node* temp{root};
-        add(data,temp);
-    }
+    void insert_iterative(string str){
+        trie* tmp = this;
 
-
-      /*************
-    	Home work 
-      **************/
-    //queries of ancestors
-    vector<pair<bool,int>> get_ancestors(vector<int>& q){
-        vector<pair<bool,int>>ans;
-        node* temp{root};
-        for(int i = 0;i<(int)q.size();i++){
-            ans.push_back(get_ancestors(nullptr,temp,q[i]));
+        for(int idx = 0 ;idx < (int)str.size(); idx++){
+            int currentChar = str[idx] - 'a';
+            if(tmp->child.count(currentChar) == 0)
+                tmp->child[currentChar] = new trie();
+            tmp = tmp->child[currentChar];
         }
-        return ans;
+        tmp->isLeaf = true;
     }
 
-    //destructor
-    ~binary_search_tree(){
-        node* temp{root};
-        clear(temp);
+    void get_all_strings(vector<string>& res , string str = ""){
+        if(isLeaf)
+            res.push_back(str);
+        for(int i = 0;i<26;i++){
+            if(child.count(i))
+                child[i]->get_all_strings(res , str + char('a' + i));
+        }
     }
 };
+
+void unique_substrings_trie(const string &str , vector<string>& res){
+    trie tree;
+    int n = (int)str.size();
+    for(int start = 0;start < n;start++){
+        for(int end = start;end < n;end++){
+            tree.insert_iterative(str.substr(start , end - start + 1));
+        }
+    }
+    tree.get_all_strings(res);
+}
+
+void test1(){
+    int cnt{0};
+
+    string str1{"aaab"};
+    string str2{"aa"};
+
+    vector<string>res1 , res2;
+
+    unique_substrings_trie(str1 , res1);
+    unique_substrings_trie(str2 , res2);
+
+    unordered_map<string , bool>mp;
+
+    for(auto& x : res1){
+        mp[x] = true;
+    }
+    for(auto& x : res2){
+        if(mp.count(x)){
+            cnt++;
+        }
+    }
+    cout<<cnt<<"\n";
+}
+
+void test2(){
+    int cnt{0};
+
+    string str1{"aaab"};
+    string str2{"ab"};
+
+    vector<string>res1 , res2;
+
+    unique_substrings_trie(str1 , res1);
+    unique_substrings_trie(str2 , res2);
+
+    unordered_map<string , bool>mp;
+
+    for(auto& x : res1){
+        mp[x] = true;
+    }
+    for(auto& x : res2){
+        if(mp.count(x)){
+            cnt++;
+        }
+    }
+    cout<<cnt<<"\n";
+}
+
+void test3(){
+    int cnt{0};
+
+    string str1{"aaaaa"};
+    string str2{"xy"};
+
+    vector<string>res1 , res2;
+
+    unique_substrings_trie(str1 , res1);
+    unique_substrings_trie(str2 , res2);
+
+    unordered_map<string , bool>mp;
+
+    for(auto& x : res1){
+        mp[x] = true;
+    }
+    for(auto& x : res2){
+        if(mp.count(x)){
+            cnt++;
+        }
+    }
+    cout<<cnt<<"\n";
+}
+
+void test4(){
+    int cnt{0};
+
+    string str1{"aaaaa"};
+    string str2{"aaaaa"};
+
+    vector<string>res1 , res2;
+
+    unique_substrings_trie(str1 , res1);
+    unique_substrings_trie(str2 , res2);
+
+    unordered_map<string , bool>mp;
+
+    for(auto& x : res1){
+        mp[x] = true;
+    }
+    for(auto& x : res2){
+        if(mp.count(x)){
+            cnt++;
+        }
+    }
+    cout<<cnt<<"\n";
+}
+
+int main(){
+    test1();        //2  [a , aa]
+    test2();        //3  [a , b , aa]
+    test3();        //0
+    test4();        //5  [a , aa , aaa , aaaa , aaaaa]
+}
