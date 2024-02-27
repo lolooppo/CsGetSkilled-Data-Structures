@@ -1,84 +1,91 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-// tree node
-struct node{
-    int data;
-    node *left{nullptr} , *right{nullptr};
-    node(int data):data(data){}
-};
-
-//tree class
-class binary_search_tree{
+class trie{
 private:
-    node* root{nullptr};
+    map<int , trie*>child;
+    bool isLeaf{true};
 
-    //print sorted
-    void print(node* temp){
-        if(temp->left)
-            print(temp->left);
-        cout<<temp->data<<" ";
-        if(temp->right)
-            print(temp->right);
+public:
+    trie(){
+
     }
 
-    //add to the tree
-    void add(int data,node* temp){
-        if(data<temp->data){
-            if(temp->left){
-                add(data,temp->left);
-            }else{
-                temp->left = new node(data);
-            }
-        }else{
-            if(temp->right){
-                add(data,temp->right);
-            }else{
-                temp->right = new node(data);
-            }
+    void insert_iterative(string str){
+        trie* tmp = this;
+
+        for(int idx = 0 ;idx < (int)str.size(); idx++){
+            int currentChar = str[idx] - 'a';
+            if(tmp->child.count(currentChar) == 0)
+                tmp->child[currentChar] = new trie();
+            tmp = tmp->child[currentChar];
         }
     }
 
-    //get the least common ancestor
-    int lca(int data1,int data2,node* temp){
-        if(data1<temp->data and data2<temp->data)
-            return lca(data1,data2,temp->left);
-        if(data1>temp->data and data2>temp->data)
-            return lca(data1,data2,temp->right);
-        return temp->data;
-    }
-
-public:
-    //constructor
-    binary_search_tree(int data):root(new node(data)){}
-
-    //print sorted
-    void print(){
-        node* temp{root};
-        print(temp);
-        cout<<"\n";
-    }
-
-    //add to the tree
-    void add(int data){
-        node* temp{root};
-        add(data,temp);
-    }
-
-    /*****************
-        Home work
-    *****************/
-    //get the lowest common ancestor
-    int lca(int data1,int data2){
-        node* temp{root};
-        int res = lca(data1,data2,temp);
-        return res;
-    }
-
-
-    //destructor
-    ~binary_search_tree(){
-        node* temp{root};
-        clear(temp);
+    void get_all_strings(vector<string>& res , string str = ""){
+        if(isLeaf){
+            if(str != "")//handle the first time to push
+                res.push_back(str);
+        }
+        for(int i = 0;i<26;i++){
+            if(child.count(i))
+                child[i]->get_all_strings(res , str + char('a' + i));
+        }
     }
 };
+
+/*
+    Given a string, count how many unique substring inside it
+    ○ int count_unique_substrings(const string &str)
+    ● For string aaab, substrings are:
+    ○ a, aa, aaa, aaab, a, aa, aab, a, ab, b
+    ○ Only 7 distinct substrings
+*/
+
+//1st approach to use a hash set
+int count_unique_substrings_hash_set(const string &str){
+    int n = (int)str.size();
+    unordered_set<string>u_s;
+    for(int start = 0;start < n;start++){
+        for(int end = start;end < n;end++){
+            string sub = str.substr(start , end - start + 1);
+            u_s.insert(sub);
+        }
+    }
+    return (int)u_s.size();
+}
+//2nd to use a letter trie tree
+int count_unique_substrings_trie(const string &str){
+    trie tree;
+    vector<string>res;
+    int n = (int)str.size();
+    for(int i = 0;i < n;i++){
+        string sub = str.substr(i , n);
+        tree.insert_iterative(sub);
+    }
+    tree.get_all_strings(res);
+    return (int)res.size();
+}
+
+void test(){
+    string str1{"aaab"};            //7
+    string str2{"aaaaa"};           //5
+    string str3{"aaaba"};           //11
+    string str4{"abcdef"};          //21
+
+    cout<<"1st approach : \n";
+    cout<<count_unique_substrings_hash_set(str1)<<"\n";
+    cout<<count_unique_substrings_hash_set(str2)<<"\n";
+    cout<<count_unique_substrings_hash_set(str3)<<"\n";
+    cout<<count_unique_substrings_hash_set(str4)<<"\n";
+
+    cout<<"2nd approach : \n";
+    cout<<count_unique_substrings_trie(str1)<<"\n";
+    cout<<count_unique_substrings_trie(str2)<<"\n";
+    cout<<count_unique_substrings_trie(str3)<<"\n";
+    cout<<count_unique_substrings_trie(str4)<<"\n";
+}
+
+int main(){
+    test();
+}
