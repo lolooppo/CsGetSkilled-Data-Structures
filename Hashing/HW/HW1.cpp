@@ -41,6 +41,14 @@ public:
     ○ Only 7 distinct substrings
 */
 
+
+
+
+
+
+
+
+
 //1st approach to use a hash set
 int count_unique_substrings_hash_set(const string &str){
     int n = (int)str.size();
@@ -53,6 +61,16 @@ int count_unique_substrings_hash_set(const string &str){
     }
     return (int)u_s.size();
 }
+
+
+
+
+
+
+
+
+
+
 //2nd to use a letter trie tree
 int count_unique_substrings_trie(const string &str){
     trie tree;
@@ -66,6 +84,11 @@ int count_unique_substrings_trie(const string &str){
     tree.get_all_strings(res);
     return (int)res.size();
 }
+
+
+
+
+
 
 void test(){
     string str1{"aaab"};            //7
