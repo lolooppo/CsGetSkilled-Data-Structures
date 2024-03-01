@@ -1,0 +1,126 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+struct node{
+    int data{0};
+    node* next{nullptr};
+    node(int data):data(data){}
+};
+
+class linkedList{
+private:
+    node *head{nullptr},*tail{nullptr};
+    int length{0};
+
+    //print reversed in a recursive manner
+    void print_reverse(node *temp){
+        if(temp==nullptr)
+            return;
+        print_reverse(temp->next);
+        cout<<temp->data<<" ";
+    }
+
+public:
+
+    //add to the last
+    void push_back(int val){
+        //create a node with the given value
+        node *temp = new node(val);
+
+        //check if it is the first node
+        if(!head){
+            head = tail = temp;
+        }
+        else{
+            tail->next = temp;
+            tail = temp;
+        }
+        ++length;
+    }
+
+    //add to the first
+    void push_front(int val){
+        node *temp = new node(val);
+        //check if it is the first node
+        if(!head){
+            head = tail = temp;
+        }
+        else{
+            temp->next = head;
+            head = temp;
+        }
+        ++length;
+    }
+
+    //delete the last element
+    void pop_back(){
+        //check if it is already empty
+        if(!head)
+            return;
+
+        //keep the iterating with previous and current node to set the new tail
+        node* prev{nullptr},* curr{head};
+        while(curr){
+            //check if we reached before the last
+            if(!curr->next){
+                tail = prev;
+                if(tail){
+                    tail->next = nullptr;
+                }
+                else{
+                    tail = head = nullptr;
+                }
+                delete curr;
+                break;
+            }
+            prev = curr;
+            curr = curr->next;
+        }
+        length--;
+    }
+
+    //delete the first element
+    void pop_front(){
+        //check if it is already empty
+        if(!head)
+            return;
+
+        node *dummy = head;
+        head = head->next;
+        delete dummy;
+        //check if the list became empty
+        if(!head){
+            head = tail = nullptr;
+        }
+        length--;
+    }
+
+
+
+
+
+
+
+    /******************
+        Home Work 3
+    ******************/
+    //calling parameterized reverse print function
+    void print_reverse(){
+        node *temp = head;
+        //call the function with dummy head
+        print_reverse(temp);
+        cout<<"\n";
+    }
+
+
+    //destructor
+    ~linkedList(){
+        node* temp{head};
+
+        while(temp){
+            node *dummy = temp;
+            temp = temp->next;
+            delete dummy;
+        }
+    }
+};
